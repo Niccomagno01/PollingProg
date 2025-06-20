@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-  <meta charset="UTF-8" />
   <title>Polling App - Minimal Client</title>
+  <meta charset="UTF-8" />
 </head>
 <body>
   <h1>Polling App</h1>
@@ -11,13 +10,17 @@
   <h2>Login</h2>
   <input id="username" placeholder="Username" />
   <input id="password" type="password" placeholder="Password" />
-  <button id="login-btn" onclick="login()">Login</button>
-  <button id="logout-btn" onclick="logout()" style="display:none;">Logout</button>
-  <p id="login-status">Non sei loggato</p>
+  <button onclick="login()">Login</button>
+  <p id="login-status"></p>
 
   <h2>Crea Sondaggio</h2>
-  <input id="poll-question" placeholder="Domanda" disabled />
-  <button id="create-poll-btn" onclick="createPoll()" disabled>Crea</button>
+  <input id="poll-question" placeholder="Domanda" />
+  <button onclick="createPoll()">Crea Sondaggio</button>
+
+  <h2>Aggiungi Scelte</h2>
+  <input id="choice-text" placeholder="Testo scelta" />
+  <input id="poll-id-for-choice" placeholder="ID sondaggio" />
+  <button onclick="addChoice()">Aggiungi Scelta</button>
 
   <h2>Lista Sondaggi</h2>
   <button onclick="loadPolls()">Ricarica</button>
@@ -25,16 +28,6 @@
 
   <script>
     let token = null;
-
-    function updateUIOnLogin(isLoggedIn) {
-      document.getElementById('login-status').textContent = isLoggedIn ? 'Sei loggato' : 'Non sei loggato';
-      document.getElementById('username').disabled = isLoggedIn;
-      document.getElementById('password').disabled = isLoggedIn;
-      document.getElementById('login-btn').style.display = isLoggedIn ? 'none' : 'inline';
-      document.getElementById('logout-btn').style.display = isLoggedIn ? 'inline' : 'none';
-      document.getElementById('poll-question').disabled = !isLoggedIn;
-      document.getElementById('create-poll-btn').disabled = !isLoggedIn;
-    }
 
     async function login() {
       const res = await fetch('/api/token/', {
@@ -45,29 +38,20 @@
           password: document.getElementById('password').value
         })
       });
-
-      if (res.ok) {
-        const data = await res.json();
-        token = data.access;
-        alert('Login effettuato!');
-        updateUIOnLogin(true);
-      } else {
-        alert('Login fallito! Controlla username e password.');
+      const loginStatus = document.getElementById('login-status');
+      if (!res.ok) {
+        loginStatus.textContent = 'Login fallito';
+        return;
       }
-    }
-
-    function logout() {
-      token = null;
-      alert('Sei uscito dal sistema');
-      updateUIOnLogin(false);
+      const data = await res.json();
+      token = data.access;
+      loginStatus.textContent = 'Login effettuato!';
     }
 
     async function createPoll() {
-      const question = document.getElementById('poll-question').value;
-      if (!question.trim()) {
-        alert('Inserisci una domanda per il sondaggio');
-        return;
-      }
+      if (!token) { alert('Devi prima effettuare il login'); return; }
+      const question = document.getElementById('poll-question').value.trim();
+      if (!question) { alert('Inserisci la domanda'); return; }
       const res = await fetch('/api/polls/', {
         method: 'POST',
         headers: {
@@ -76,35 +60,94 @@
         },
         body: JSON.stringify({ question })
       });
-
-      if (res.ok) {
-        const data = await res.json();
-        alert('Sondaggio creato con ID: ' + data.id);
-        loadPolls();
-        document.getElementById('poll-question').value = '';
-      } else {
+      if (!res.ok) {
         alert('Errore nella creazione del sondaggio');
+        return;
       }
+      const data = await res.json();
+      alert('Sondaggio creato con ID: ' + data.id);
+      document.getElementById('poll-id-for-choice').value = data.id;
+      document.getElementById('poll-question').value = '';
+    }
+
+    async function addChoice() {
+      if (!token) { alert('Devi prima effettuare il login'); return; }
+      const choice_text = document.getElementById('choice-text').value.trim();
+      const poll_id = document.getElementById('poll-id-for-choice').value.trim();
+      if (!choice_text || !poll_id) {
+        alert('Inserisci testo scelta e ID sondaggio');
+        return;
+      }
+      const res = await fetch(`/api/polls/${poll_id}/choices/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ choice_text })
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        alert('Errore nell\'aggiunta della scelta: ' + (err.error || JSON.stringify(err)));
+        return;
+      }
+      alert('Scelta aggiunta con successo!');
+      document.getElementById('choice-text').value = '';
+      loadPolls();
+    }
+
+    async function vote(pollId, choiceId) {
+      if (!token) { alert('Devi prima effettuare il login'); return; }
+      const res = await fetch(`/api/polls/${pollId}/vote/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ choice: choiceId })
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        alert('Errore nel voto: ' + (err.error || JSON.stringify(err)));
+        return;
+      }
+      alert('Voto registrato con successo!');
+      loadPolls();
     }
 
     async function loadPolls() {
       const res = await fetch('/api/polls/');
-      if (res.ok) {
-        const data = await res.json();
-        const list = document.getElementById('polls-list');
-        list.innerHTML = '';
-        data.forEach(poll => {
-          const li = document.createElement('li');
-          li.textContent = `(${poll.id}) ${poll.question}`;
-          list.appendChild(li);
-        });
-      } else {
-        alert('Errore nel caricamento dei sondaggi');
+      if (!res.ok) {
+        alert('Errore nel caricamento sondaggi');
+        return;
       }
-    }
+      const data = await res.json();
+      const list = document.getElementById('polls-list');
+      list.innerHTML = '';
+      data.forEach(poll => {
+        const li = document.createElement('li');
+        li.textContent = `(${poll.id}) ${poll.question}`;
 
-    // Imposta UI iniziale (logout)
-    updateUIOnLogin(false);
+        if (poll.choices && poll.choices.length > 0) {
+          const choicesUl = document.createElement('ul');
+          poll.choices.forEach(choice => {
+            const choiceLi = document.createElement('li');
+            choiceLi.textContent = `${choice.choice_text} (voti: ${choice.votes_count})`;
+            // Aggiungo bottone voto se loggato
+            if(token) {
+              const voteBtn = document.createElement('button');
+              voteBtn.textContent = 'Vota';
+              voteBtn.onclick = () => vote(poll.id, choice.id);
+              choiceLi.appendChild(voteBtn);
+            }
+            choicesUl.appendChild(choiceLi);
+          });
+          li.appendChild(choicesUl);
+        }
+        list.appendChild(li);
+      });
+    }
   </script>
 </body>
 </html>
+
