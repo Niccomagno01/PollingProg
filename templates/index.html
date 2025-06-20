@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Polling App - Minimal Client</title>
+  <meta charset="UTF-8" />
+</head>
+<body>
+  <h1>Polling App</h1>
+
+  <h2>Login</h2>
+  <input id="username" placeholder="Username" />
+  <input id="password" type="password" placeholder="Password" />
+  <button onclick="login()">Login</button>
+
+  <h2>Crea Sondaggio</h2>
+  <input id="poll-question" placeholder="Domanda" />
+  <button onclick="createPoll()">Crea</button>
+
+  <h2>Lista Sondaggi</h2>
+  <button onclick="loadPolls()">Ricarica</button>
+  <ul id="polls-list"></ul>
+
+  <script>
+    let token = null;
+
+    async function login() {
+      const res = await fetch('/api/token/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('username').value,
+          password: document.getElementById('password').value
+        })
+      });
+      const data = await res.json();
+      token = data.access;
+      alert('Login effettuato!');
+    }
+
+    async function createPoll() {
+      const question = document.getElementById('poll-question').value;
+      const res = await fetch('/api/polls/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ question })
+      });
+      const data = await res.json();
+      alert('Sondaggio creato con ID: ' + data.id);
+    }
+
+    async function loadPolls() {
+      const res = await fetch('/api/polls/');
+      const data = await res.json();
+      const list = document.getElementById('polls-list');
+      list.innerHTML = '';
+      data.forEach(poll => {
+        const li = document.createElement('li');
+        li.textContent = `(${poll.id}) ${poll.question}`;
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
