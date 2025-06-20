@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import Poll, Choice, Vote
-from .serializers import PollSerializer, VoteSerializer
+from .serializers import PollSerializer, VoteSerializer, ChoiceSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
@@ -45,5 +45,14 @@ class VoteCreateView(APIView):
         vote = Vote.objects.create(user=user, choice=choice)
         serializer = VoteSerializer(vote)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class ChoiceCreateView(generics.CreateAPIView):
+    serializer_class = ChoiceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        poll_id = self.kwargs['poll_id']
+        poll = Poll.objects.get(id=poll_id)
+        serializer.save(poll=poll)
 
 # Create your views here.
