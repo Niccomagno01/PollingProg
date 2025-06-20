@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8604fd9a-ab12-4137-a72b-0eb65def10a0" name="Changes" comment="modifiche">
+    <list default="true" id="8604fd9a-ab12-4137-a72b-0eb65def10a0" name="Changes" comment="aggiunta frontend minimale">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PollingProg/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/PollingProg/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +20,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -37,10 +38,12 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
     "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -95,7 +98,7 @@
       <workItem from="1750411479039" duration="782000" />
       <workItem from="1750412270725" duration="5872000" />
       <workItem from="1750418482945" duration="10000" />
-      <workItem from="1750424810794" duration="7210000" />
+      <workItem from="1750424810794" duration="8698000" />
     </task>
     <task id="LOCAL-00001" summary=".">
       <option name="closed" value="true" />
@@ -153,7 +156,23 @@
       <option name="project" value="LOCAL" />
       <updated>1750431473573</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="aggiunto percorso">
+      <option name="closed" value="true" />
+      <created>1750432582550</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1750432582550</updated>
+    </task>
+    <task id="LOCAL-00009" summary="aggiunta frontend minimale">
+      <option name="closed" value="true" />
+      <created>1750432949533</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1750432949533</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -164,6 +183,8 @@
     <MESSAGE value="Implementata API polling con JWT e setup base" />
     <MESSAGE value="implementazione client e db" />
     <MESSAGE value="modifiche" />
-    <option name="LAST_COMMIT_MESSAGE" value="modifiche" />
+    <MESSAGE value="aggiunto percorso" />
+    <MESSAGE value="aggiunta frontend minimale" />
+    <option name="LAST_COMMIT_MESSAGE" value="aggiunta frontend minimale" />
   </component>
 </project>
