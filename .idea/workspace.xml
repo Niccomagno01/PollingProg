@@ -4,13 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8604fd9a-ab12-4137-a72b-0eb65def10a0" name="Changes" comment="implementazione client e db">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="8604fd9a-ab12-4137-a72b-0eb65def10a0" name="Changes" comment="modifiche">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PollingProg/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/PollingProg/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -91,7 +95,7 @@
       <workItem from="1750411479039" duration="782000" />
       <workItem from="1750412270725" duration="5872000" />
       <workItem from="1750418482945" duration="10000" />
-      <workItem from="1750424810794" duration="4485000" />
+      <workItem from="1750424810794" duration="7210000" />
     </task>
     <task id="LOCAL-00001" summary=".">
       <option name="closed" value="true" />
@@ -117,7 +121,39 @@
       <option name="project" value="LOCAL" />
       <updated>1750429337500</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="implementazione client e db">
+      <option name="closed" value="true" />
+      <created>1750429865632</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1750429865632</updated>
+    </task>
+    <task id="LOCAL-00005" summary="implementazione client e db">
+      <option name="closed" value="true" />
+      <created>1750430081105</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1750430081105</updated>
+    </task>
+    <task id="LOCAL-00006" summary="implementazione client e db">
+      <option name="closed" value="true" />
+      <created>1750430281140</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1750430281140</updated>
+    </task>
+    <task id="LOCAL-00007" summary="modifiche">
+      <option name="closed" value="true" />
+      <created>1750431473573</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1750431473573</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -127,6 +163,7 @@
     <MESSAGE value="." />
     <MESSAGE value="Implementata API polling con JWT e setup base" />
     <MESSAGE value="implementazione client e db" />
-    <option name="LAST_COMMIT_MESSAGE" value="implementazione client e db" />
+    <MESSAGE value="modifiche" />
+    <option name="LAST_COMMIT_MESSAGE" value="modifiche" />
   </component>
 </project>
