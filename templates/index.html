@@ -62,6 +62,14 @@
       font-weight: bold;
       margin-top: 5px;
     }
+    #logout-btn {
+      background-color: #d9534f;
+      margin-top: 10px;
+      display: none;
+    }
+    #logout-btn:hover {
+      background-color: #c9302c;
+    }
   </style>
 </head>
 <body>
@@ -73,6 +81,7 @@
     <input id="username" placeholder="Username" autocomplete="username" />
     <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
     <button onclick="login()">Login</button>
+    <button id="logout-btn" onclick="logout()">Logout</button>
     <p id="login-status"></p>
   </section>
 
@@ -103,6 +112,7 @@
     const password = document.getElementById('password').value.trim();
     const status = document.getElementById('login-status');
     if (!username || !password) {
+      status.style.color = '#d33';
       status.textContent = 'Inserisci username e password';
       return;
     }
@@ -121,10 +131,27 @@
       status.textContent = 'Login effettuato con successo!';
       document.getElementById('create-poll-section').style.display = 'block';
       document.getElementById('add-choice-section').style.display = 'block';
+      document.getElementById('logout-btn').style.display = 'block';
     } catch (e) {
       status.style.color = '#d33';
       status.textContent = e.message;
     }
+  }
+
+  function logout() {
+    token = null;
+    document.getElementById('login-status').textContent = 'Logout effettuato';
+    document.getElementById('login-status').style.color = 'black';
+
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('poll-question').value = '';
+    document.getElementById('poll-id-for-choice').value = '';
+    document.getElementById('choice-text').value = '';
+
+    document.getElementById('create-poll-section').style.display = 'none';
+    document.getElementById('add-choice-section').style.display = 'none';
+    document.getElementById('logout-btn').style.display = 'none';
   }
 
   async function createPoll() {
@@ -251,9 +278,9 @@
     }
   }
 
-  // Carica i sondaggi appena aperta la pagina
   loadPolls();
 </script>
 
 </body>
 </html>
+
