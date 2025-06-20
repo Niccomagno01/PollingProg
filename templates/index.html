@@ -11,6 +11,7 @@
   <input id="username" placeholder="Username" />
   <input id="password" type="password" placeholder="Password" />
   <button onclick="login()">Login</button>
+  <button onclick="logout()">Logout</button>
   <p id="login-status"></p>
 
   <h2>Crea Sondaggio</h2>
@@ -46,6 +47,12 @@
       const data = await res.json();
       token = data.access;
       loginStatus.textContent = 'Login effettuato!';
+    }
+
+    function logout() {
+      token = null;
+      document.getElementById('login-status').textContent = 'Sei uscito';
+      alert('Logout effettuato!');
     }
 
     async function createPoll() {
@@ -133,7 +140,6 @@
           poll.choices.forEach(choice => {
             const choiceLi = document.createElement('li');
             choiceLi.textContent = `${choice.choice_text} (voti: ${choice.votes_count})`;
-            // Aggiungo bottone voto se loggato
             if(token) {
               const voteBtn = document.createElement('button');
               voteBtn.textContent = 'Vota';
@@ -145,9 +151,6 @@
           li.appendChild(choicesUl);
         }
         list.appendChild(li);
-      });
-    }
-  </script>
-</body>
-</html>
+      }
+
 
