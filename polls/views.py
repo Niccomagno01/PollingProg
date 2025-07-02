@@ -8,24 +8,23 @@ from .serializers import PollSerializer, VoteSerializer, ChoiceSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 class PollListCreateView(generics.ListCreateAPIView):
     queryset = Poll.objects.all()
     serializer_class = PollSerializer
-
-    def get_permissions(self):
-        if self.request.method == 'POST':
-            return [permissions.IsAuthenticated()]
-        return [permissions.AllowAny()]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
 
+from .permissions import IsAdminOrOwner
+
 class PollDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Poll.objects.all()
     serializer_class = PollSerializer
-    permission_classes = [IsOwnerOrReadOnly]
-
+    permission_classes = [IsAdminOrOwner]
 
 class VoteCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -55,4 +54,14 @@ class ChoiceCreateView(generics.CreateAPIView):
         poll = Poll.objects.get(id=poll_id)
         serializer.save(poll=poll)
 
-# Create your views here.
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .serializers import UserSerializer
+
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
