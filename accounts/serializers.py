@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser # Importa il tuo modello CustomUser
+from .models import CustomUser
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -20,6 +20,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser # Usa il tuo modello CustomUser
-        # Assicurati di includere 'id' e 'is_staff'
-        fields = ('id', 'username', 'email', 'is_staff', 'bio') # Ho aggiunto anche 'bio' per completezza
+
+        fields = ('id', 'username', 'email', 'is_staff', 'bio')
 

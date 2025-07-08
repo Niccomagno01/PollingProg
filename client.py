@@ -1,10 +1,7 @@
-
-
-# client.py
 import requests
 
 API_URL = "http://127.0.0.1:8000/api"
-USERNAME = "admin" # Assicurati che questo utente sia un superuser o il creatore del poll
+USERNAME = "admin"
 PASSWORD = "123456789"
 
 def get_tokens(username, password):

@@ -98,6 +98,4 @@ STATIC_URL = '/static/'
 # Porta per il server (Railway la fornisce)
 PORT = int(os.environ.get('PORT', 8000))
 
-# --- Nota importante ---
-# In produzione NON usare DEBUG=True e non mettere ALLOWED_HOSTS = ['*']
-# Cambia sempre SECRET_KEY e usala da environment variables sicure.
+

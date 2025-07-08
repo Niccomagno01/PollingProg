@@ -1,9 +1,8 @@
-# polls/serializers.py
 from rest_framework import serializers
 from .models import Poll, Choice, Vote
 from django.contrib.auth import get_user_model
 
-User = get_user_model() # Ottieni il modello utente personalizzato
+User = get_user_model()
 
 class ChoiceSerializer(serializers.ModelSerializer):
     votes_count = serializers.SerializerMethodField()
@@ -11,13 +10,13 @@ class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choice
         fields = ['id', 'choice_text', 'votes_count']
-        read_only_fields = ['votes_count'] # Il conteggio dei voti è in sola lettura
+        read_only_fields = ['votes_count']
 
     def get_votes_count(self, obj):
         return obj.votes.count()
 
 class PollSerializer(serializers.ModelSerializer):
-    # Rendi choices scrivibile. `many=True` per una lista di choices
+
     choices = ChoiceSerializer(many=True)
     created_by = serializers.ReadOnlyField(source='created_by.username')
 
@@ -34,14 +33,11 @@ class PollSerializer(serializers.ModelSerializer):
         return poll
 
     def update(self, instance, validated_data):
-        # Aggiorna la domanda del sondaggio
+
         instance.question = validated_data.get('question', instance.question)
         instance.save()
 
-        # Gestione delle scelte:
-        # Questo è un approccio semplice che sovrascrive le scelte esistenti.
-        # Per una gestione più granulare (aggiungi, rimuovi, modifica singole scelte),
-        # sarebbe necessario un approccio più complesso.
+
         choices_data = validated_data.pop('choices', [])
         instance.choices.all().delete() # Cancella tutte le scelte esistenti
 
@@ -61,4 +57,4 @@ class VoteSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'is_staff', 'email'] # Aggiungi is_staff per controllare i permessi
+        fields = ['id', 'username', 'is_staff', 'email']

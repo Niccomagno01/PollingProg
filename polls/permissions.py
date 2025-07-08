@@ -1,14 +1,11 @@
-
-# polls/permissions.py
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 class IsOwnerOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
-        # Permetti richieste di lettura a tutti
+
         if request.method in SAFE_METHODS:
             return True
-        # Permetti solo al creatore dell'oggetto di modificarlo/eliminarlo
-        # Assicurati che l'utente sia autenticato e che sia il creatore
+
         return obj.created_by == request.user
 
 class IsAdminOrOwner(BasePermission):
