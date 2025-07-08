@@ -1,24 +1,53 @@
-# PollingProg
+#PollingProg
 
-## Descrizione
-PollingProg è un'applicazione REST API per creare e partecipare a sondaggi.
+##Descrizione
 
-## Funzionalità
-- Lista e dettaglio sondaggi (accesso anonimo)
-- Creazione, modifica e cancellazione sondaggi (utenti autenticati)
-- Creazione scelte per sondaggi
-- Votazione su sondaggi (1 voto per utente per sondaggio)
-- Autenticazione con token JWT
+PollingProg è un'applicazione web per creare e gestire sondaggi online.
+Gli utenti possono registrarsi, creare sondaggi con più scelte, votare e visualizzare i risultati.
+L'app utilizza Django REST Framework per la API backend, con autenticazione JWT.
 
-## Come usare
-1. Clonare il repository
-2. Creare un ambiente virtuale e installare le dipendenze con `pip install -r requirements.txt`
-3. Eseguire le migrazioni con `python manage.py migrate`
-4. Avviare il server con `python manage.py runserver`
-5. Usare il client Python o Postman per testare l'API
+##Funzionalità principali
 
-## Dipendenze principali
-- Django
-- djangorestframework
-- djangorestframework-simplejwt
-- requests (solo per il client Python)
+Registrazione e autenticazione utenti con JWT
+Creazione, modifica e cancellazione di sondaggi (solo da parte del creatore o admin)
+Aggiunta di scelte a ciascun sondaggio
+Votazione ai sondaggi da parte degli utenti autenticati
+Visualizzazione dei risultati con conteggio voti per ogni scelta
+Endpoint protetti da permessi e autenticazione
+Setup Repository
+
+Il progetto è ospitato su Railway e può essere visualizzato all'indirizzo:
+https://web-production-e349a.up.railway.app
+
+##API Endpoints principali
+
+Metodo	Endpoint	Descrizione	Accesso
+POST	/api/accounts/register/	Registrazione nuovo utente	Pubblico
+POST	/api/token/	Login e ottenimento token JWT	Pubblico
+GET	/api/polls/	Lista sondaggi	Anonimi e autenticati
+POST	/api/polls/	Creazione sondaggio	Solo utenti autenticati
+GET	/api/polls/<poll_id>/	Dettagli sondaggio	Anonimi e autenticati
+PUT	/api/polls/<poll_id>/	Aggiornamento sondaggio	Solo creatore o admin
+POST	/api/polls/<poll_id>/vote/	Votazione	Solo utenti autenticati
+POST	/api/polls/<poll_id>/choices/	Aggiunta scelta a sondaggio	Solo creatore o admin
+GET	/api/accounts/me/	Informazioni utente autenticato	Solo autenticati
+
+##Descrizione del sito
+
+Questo sito permette agli utenti di creare, gestire e partecipare a sondaggi online.
+Gli utenti possono registrarsi, effettuare il login, creare nuovi sondaggi con domande personalizzate, votare nei sondaggi esistenti e visualizzare i risultati in tempo reale.
+I creatori dei sondaggi (o gli amministratori) possono modificare o eliminare i propri sondaggi.
+
+Nota: per modificare un sondaggio, è necessario cliccare il tasto "Modifica" nella pagina del sondaggio.
+
+##Utenti di test predefiniti
+
+Username	Password
+admin	123456789
+user	qwertyuiop
+user3	1234
+user4	asdf
+user5	qwer
+
+
+
