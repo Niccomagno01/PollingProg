@@ -14,7 +14,7 @@
     h1, h2 {
       color: #333;
     }
-    input, button {
+    input, button, textarea { /* Aggiungi textarea allo stile */
       padding: 8px;
       margin: 5px 0;
       width: 100%;
@@ -82,6 +82,49 @@
     #show-register-btn:hover {
       background-color: #0056b3;
     }
+    /* Stili per i pulsanti Modifica e Elimina nel singolo sondaggio */
+    .poll-actions button {
+        width: auto;
+        margin-right: 5px;
+        padding: 5px 10px;
+        font-size: 0.8em;
+    }
+    .edit-poll-btn {
+        background-color: #ffc107;
+        color: #333;
+    }
+    .edit-poll-btn:hover {
+        background-color: #e0a800;
+    }
+    .delete-poll-btn {
+        background-color: #dc3545;
+    }
+    .delete-poll-btn:hover {
+        background-color: #c82333;
+    }
+
+    /* Stili per la sezione di modifica */
+    #edit-poll-section {
+        background: #e0f7fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+    #edit-poll-section h2 {
+        color: #007bff;
+    }
+    #edit-poll-section button {
+        background-color: #28a745;
+    }
+    #edit-poll-section button:hover {
+        background-color: #218838;
+    }
+    #edit-poll-section #cancel-edit-btn {
+        background-color: #6c757d;
+    }
+    #edit-poll-section #cancel-edit-btn:hover {
+        background-color: #5a6268;
+    }
   </style>
 </head>
 <body>
@@ -109,28 +152,61 @@
   <section id="create-poll-section" style="display:none;">
     <h2>Crea Sondaggio</h2>
     <input id="poll-question" placeholder="Inserisci la domanda del sondaggio" />
+    <input id="poll-choices" placeholder="Scelte (separate da virgola, es. Si, No, Forse)" />
     <button onclick="createPoll()">Crea</button>
   </section>
 
-  <section id="add-choice-section" style="display:none;">
-    <h2>Aggiungi Scelta</h2>
-    <input id="poll-id-for-choice" placeholder="ID sondaggio" />
-    <input id="choice-text" placeholder="Testo scelta" />
-    <button onclick="addChoice()">Aggiungi</button>
+  <section id="edit-poll-section" class="hidden">
+    <h2>Modifica Sondaggio</h2>
+    <input id="edit-poll-id" type="hidden" />
+    <label for="edit-poll-question">Domanda:</label>
+    <input id="edit-poll-question" placeholder="Domanda del sondaggio" />
+    <label for="edit-poll-choices">Scelte (separate da virgola):</label>
+    <textarea id="edit-poll-choices" rows="4" placeholder="Scelte (separate da virgola, es. Opzione A, Opzione B)"></textarea>
+    <button onclick="updatePoll()">Salva Modifiche</button>
+    <button id="cancel-edit-btn" onclick="hideEditPollSection()">Annulla</button>
   </section>
 
   <section id="polls-container">
     <h2>Lista Sondaggi</h2>
     <button onclick="loadPolls()">Aggiorna</button>
-    <!-- Qui si caricano i sondaggi -->
-  </section>
-
+    </section>
 <script>
   let token = null;
+  let currentUser = null; // Aggiungi una variabile per memorizzare l'utente corrente
 
   function showRegister() {
     document.getElementById('register-section').classList.remove('hidden');
     document.getElementById('show-register-btn').style.display = 'none';
+    document.getElementById('login-status').textContent = ''; // Pulisci il messaggio di stato
+  }
+
+  // Funzione per ottenere i dati dell'utente corrente
+  async function getCurrentUser() {
+    if (!token) {
+      currentUser = null;
+      console.log('getCurrentUser: Token non presente, currentUser = null');
+      return;
+    }
+    console.log('getCurrentUser: Tentativo di recuperare i dati utente con token:', token.substring(0, 10) + '...'); // Log del token (parziale)
+    try {
+      const res = await fetch('/api/accounts/me/', { // Assicurati che questa URL sia corretta
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      });
+      if (res.ok) {
+        currentUser = await res.json();
+        console.log('getCurrentUser: Dati utente ricevuti:', currentUser);
+      } else {
+        currentUser = null;
+        const errorText = await res.text();
+        console.error("getCurrentUser: Errore nel recupero dell'utente corrente:", res.status, errorText);
+      }
+    } catch (e) {
+      currentUser = null;
+      console.error("getCurrentUser: Eccezione durante il recupero dell'utente corrente:", e);
+    }
   }
 
   async function login() {
@@ -149,10 +225,14 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
       });
-      if (!res.ok) throw new Error('Credenziali errate');
+      if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.detail || 'Credenziali errate');
+      }
 
       const data = await res.json();
       token = data.access;
+      console.log('Login: Token ottenuto:', token.substring(0, 10) + '...'); // Log del token (parziale)
       status.style.color = 'green';
       status.textContent = 'Login effettuato con successo!';
 
@@ -163,18 +243,21 @@
       // Mostra logout e sezioni di creazione sondaggio
       document.getElementById('logout-btn').style.display = 'block';
       document.getElementById('create-poll-section').style.display = 'block';
-      document.getElementById('add-choice-section').style.display = 'block';
 
+      await getCurrentUser(); // Recupera i dati dell'utente dopo il login
+      console.log('Login: currentUser dopo getCurrentUser:', currentUser); // Log di currentUser dopo il recupero
       loadPolls();
 
     } catch (e) {
       status.style.color = '#d33';
       status.textContent = e.message;
+      console.error('Login: Errore durante il login:', e);
     }
   }
 
   function logout() {
     token = null;
+    currentUser = null; // Resetta l'utente corrente
     const status = document.getElementById('login-status');
     status.textContent = 'Logout effettuato';
     status.style.color = 'black';
@@ -183,8 +266,7 @@
     document.getElementById('username').value = '';
     document.getElementById('password').value = '';
     document.getElementById('poll-question').value = '';
-    document.getElementById('poll-id-for-choice').value = '';
-    document.getElementById('choice-text').value = '';
+    document.getElementById('poll-choices').value = ''; // Pulisci anche il campo choices
     document.getElementById('reg-username').value = '';
     document.getElementById('reg-password').value = '';
     document.getElementById('reg-password2').value = '';
@@ -192,12 +274,13 @@
     // Nascondi sezioni accessibili solo dopo login
     document.getElementById('logout-btn').style.display = 'none';
     document.getElementById('create-poll-section').style.display = 'none';
-    document.getElementById('add-choice-section').style.display = 'none';
+    document.getElementById('edit-poll-section').classList.add('hidden'); // Nascondi sezione di modifica
 
     // Mostra login e bottone registrati
     document.getElementById('show-register-btn').style.display = 'inline-block';
     document.getElementById('register-section').classList.add('hidden');
 
+    console.log('Logout: Effettuato. Token e currentUser resettati.');
     loadPolls();
   }
 
@@ -226,22 +309,32 @@
       });
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.detail || 'Errore nella registrazione');
+        let errorMessage = 'Errore nella registrazione';
+        if (err.username && err.username.length > 0) {
+            errorMessage = `Username: ${err.username.join(', ')}`;
+        } else if (err.email && err.email.length > 0) {
+            errorMessage = `Email: ${err.email.join(', ')}`;
+        } else if (err.password && err.password.length > 0) {
+            errorMessage = `Password: ${err.password.join(', ')}`;
+        } else if (err.detail) {
+            errorMessage = err.detail;
+        }
+        throw new Error(errorMessage);
       }
       status.style.color = 'green';
       status.textContent = 'Registrazione avvenuta con successo! Effettua il login';
 
-      // Nascondi form registrazione e mostra bottone registrati di nuovo
       document.getElementById('register-section').classList.add('hidden');
       document.getElementById('show-register-btn').style.display = 'inline-block';
 
-      // Pulisci campi registrazione
       document.getElementById('reg-username').value = '';
       document.getElementById('reg-password').value = '';
       document.getElementById('reg-password2').value = '';
+      console.log('Registrazione: Utente registrato con successo.');
     } catch (e) {
       status.style.color = '#d33';
       status.textContent = e.message;
+      console.error('Registrazione: Errore durante la registrazione:', e);
     }
   }
 
@@ -251,9 +344,22 @@
       return;
     }
     const question = document.getElementById('poll-question').value.trim();
+    const choicesText = document.getElementById('poll-choices').value.trim();
+
     if (!question) {
       alert('Inserisci la domanda del sondaggio');
       return;
+    }
+
+    let choices = [];
+    if (choicesText) {
+        choices = choicesText.split(',').map(c => ({ choice_text: c.trim() })).filter(c => c.choice_text !== '');
+    }
+
+    if (choices.length === 0) {
+        if (!confirm('Non hai inserito scelte per il sondaggio. Vuoi continuare comunque?')) {
+            return;
+        }
     }
 
     try {
@@ -263,49 +369,21 @@
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token
         },
-        body: JSON.stringify({ question })
-      });
-      if (!res.ok) throw new Error('Errore nella creazione del sondaggio');
-      const data = await res.json();
-      alert(`Sondaggio creato con ID: ${data.id}`);
-      document.getElementById('poll-id-for-choice').value = data.id;
-      document.getElementById('poll-question').value = '';
-      loadPolls();
-    } catch (e) {
-      alert(e.message);
-    }
-  }
-
-  async function addChoice() {
-    if (!token) {
-      alert('Devi prima effettuare il login');
-      return;
-    }
-    const poll_id = document.getElementById('poll-id-for-choice').value.trim();
-    const choice_text = document.getElementById('choice-text').value.trim();
-    if (!poll_id || !choice_text) {
-      alert('Inserisci ID sondaggio e testo scelta');
-      return;
-    }
-
-    try {
-      const res = await fetch(`/api/polls/${poll_id}/choices/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({ choice_text })
+        body: JSON.stringify({ question, choices })
       });
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || 'Errore nell\'aggiunta della scelta');
+        throw new Error(err.detail || JSON.stringify(err) || 'Errore nella creazione del sondaggio');
       }
-      alert('Scelta aggiunta con successo!');
-      document.getElementById('choice-text').value = '';
+      const data = await res.json();
+      alert(`Sondaggio creato con ID: ${data.id}`);
+      document.getElementById('poll-question').value = '';
+      document.getElementById('poll-choices').value = '';
+      console.log('Crea Sondaggio: Sondaggio creato:', data);
       loadPolls();
     } catch (e) {
       alert(e.message);
+      console.error('Crea Sondaggio: Errore durante la creazione:', e);
     }
   }
 
@@ -329,17 +407,114 @@
         throw new Error(err.error || 'Errore nel voto');
       }
       alert('Voto registrato con successo!');
+      console.log('Voto: Voto registrato per poll:', pollId, 'choice:', choiceId);
       loadPolls();
     } catch (e) {
       alert(e.message);
+      console.error('Voto: Errore durante il voto:', e);
+    }
+  }
+
+  function showEditPollSection(poll) {
+    document.getElementById('edit-poll-section').classList.remove('hidden');
+    document.getElementById('edit-poll-id').value = poll.id;
+    document.getElementById('edit-poll-question').value = poll.question;
+    document.getElementById('edit-poll-choices').value = poll.choices.map(c => c.choice_text).join(', ');
+    console.log('Modifica Sondaggio: Sezione di modifica mostrata per poll ID:', poll.id);
+  }
+
+  function hideEditPollSection() {
+    document.getElementById('edit-poll-section').classList.add('hidden');
+    document.getElementById('edit-poll-id').value = '';
+    document.getElementById('edit-poll-question').value = '';
+    document.getElementById('edit-poll-choices').value = '';
+    console.log('Modifica Sondaggio: Sezione di modifica nascosta.');
+  }
+
+  async function updatePoll() {
+    if (!token) {
+      alert('Devi prima effettuare il login');
+      return;
+    }
+    const pollId = document.getElementById('edit-poll-id').value;
+    const question = document.getElementById('edit-poll-question').value.trim();
+    const choicesText = document.getElementById('edit-poll-choices').value.trim();
+
+    if (!question) {
+      alert('Inserisci la domanda del sondaggio');
+      return;
+    }
+
+    let choices = [];
+    if (choicesText) {
+        choices = choicesText.split(',').map(c => ({ choice_text: c.trim() })).filter(c => c.choice_text !== '');
+    }
+
+    if (choices.length === 0) {
+        if (!confirm('Non hai inserito scelte per il sondaggio. Vuoi rimuovere tutte le scelte esistenti?')) {
+            return;
+        }
+    }
+
+    try {
+      const res = await fetch(`/api/polls/${pollId}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ question, choices })
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.detail || JSON.stringify(err) || 'Errore nell\'aggiornamento del sondaggio');
+      }
+      alert('Sondaggio aggiornato con successo!');
+      hideEditPollSection();
+      console.log('Aggiorna Sondaggio: Sondaggio aggiornato:', pollId);
+      loadPolls();
+    } catch (e) {
+      alert(e.message);
+      console.error('Aggiorna Sondaggio: Errore durante l\'aggiornamento:', e);
+    }
+  }
+
+  async function deletePoll(pollId) {
+    if (!token) {
+      alert('Devi prima effettuare il login');
+      return;
+    }
+    if (!confirm('Sei sicuro di voler eliminare questo sondaggio? Questa azione è irreversibile.')) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/polls/${pollId}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.detail || JSON.stringify(err) || 'Errore nell\'eliminazione del sondaggio');
+      }
+      alert('Sondaggio eliminato con successo!');
+      console.log('Elimina Sondaggio: Sondaggio eliminato:', pollId);
+      loadPolls();
+    } catch (e) {
+      alert(e.message);
+      console.error('Elimina Sondaggio: Errore durante l\'eliminazione:', e);
     }
   }
 
   async function loadPolls() {
+    console.log('loadPolls: Caricamento sondaggi...');
     try {
       const res = await fetch('/api/polls/');
       if (!res.ok) throw new Error('Errore nel caricamento sondaggi');
       const polls = await res.json();
+      console.log('loadPolls: Sondaggi ricevuti:', polls);
 
       const container = document.getElementById("polls-container");
       container.innerHTML = '<h2>Lista Sondaggi</h2><button onclick="loadPolls()">Aggiorna</button>';
@@ -349,35 +524,75 @@
         div.className = "poll";
 
         const title = document.createElement("h3");
-        title.textContent = `(${poll.id}) ${poll.question}`;
+        title.textContent = `(${poll.id}) ${poll.question} (Creato da: ${poll.created_by})`;
         div.appendChild(title);
 
+        // Debugging logs per la condizione di visualizzazione dei pulsanti
+        console.log('loadPolls: Processing poll:', poll.id);
+        console.log('  - poll.created_by:', poll.created_by);
+        console.log('  - currentUser:', currentUser);
+        if (currentUser) {
+            console.log('  - currentUser.username:', currentUser.username);
+            console.log('  - currentUser.is_staff:', currentUser.is_staff);
+            console.log('  - Match username:', currentUser.username === poll.created_by);
+            console.log('  - Is staff:', currentUser.is_staff);
+            console.log('  - Final condition (username match OR is_staff):', (currentUser.username === poll.created_by || currentUser.is_staff));
+        } else {
+            console.log('  - currentUser è null o non definito.');
+        }
+
+
+        // Aggiungi pulsanti Modifica ed Elimina se l'utente è il creatore o un superuser
+        if (currentUser && (currentUser.username === poll.created_by || currentUser.is_staff)) {
+            console.log('loadPolls: I pulsanti Modifica/Elimina dovrebbero essere visibili per il sondaggio ID:', poll.id);
+            const actionsDiv = document.createElement("div");
+            actionsDiv.className = "poll-actions";
+
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Modifica';
+            editBtn.className = 'edit-poll-btn';
+            editBtn.onclick = () => showEditPollSection(poll);
+            actionsDiv.appendChild(editBtn);
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Elimina';
+            deleteBtn.className = 'delete-poll-btn';
+            deleteBtn.onclick = () => deletePoll(poll.id);
+            actionsDiv.appendChild(deleteBtn);
+
+            div.appendChild(actionsDiv);
+        } else {
+            console.log('loadPolls: I pulsanti Modifica/Elimina NON sono visibili per il sondaggio ID:', poll.id);
+        }
+
+        const choicesList = document.createElement("ul");
         poll.choices.forEach(choice => {
-          const p = document.createElement("p");
-          p.className = "choice";
-          p.textContent = `${choice.choice_text} (${choice.votes_count} voti)`;
+          const li = document.createElement("li");
+          li.className = "choice";
+          li.textContent = `${choice.choice_text} (${choice.votes_count} voti)`;
 
           if (token) {
             const voteBtn = document.createElement('button');
             voteBtn.textContent = 'Vota';
             voteBtn.onclick = () => vote(poll.id, choice.id);
-            p.appendChild(voteBtn);
+            li.appendChild(voteBtn);
           }
-
-          div.appendChild(p);
+          choicesList.appendChild(li);
         });
+        div.appendChild(choicesList);
 
         container.appendChild(div);
       });
     } catch (e) {
-      alert("Errore nel caricamento dei sondaggi");
+      alert("Errore nel caricamento dei sondaggi: " + e.message);
+      console.error('loadPolls: Errore durante il caricamento dei sondaggi:', e);
     }
   }
 
+  // Carica i sondaggi al caricamento della pagina
   loadPolls();
 
 </script>
-
 </body>
 </html>
 
