@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-me')
 
 # DEBUG da env var, default False (produzione)
-DEBUG = 'FALSE'
+DEBUG = os.environ.get('DEBUG', 'False') == 'true'
 
 # ALLOWED_HOSTS da env var, fallback a localhost e '*'
 allowed_hosts_env = os.environ.get('ALLOWED_HOSTS')

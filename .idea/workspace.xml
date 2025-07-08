@@ -4,18 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8604fd9a-ab12-4137-a72b-0eb65def10a0" name="Changes" comment="aggiunta registrazione utente">
+    <list default="true" id="8604fd9a-ab12-4137-a72b-0eb65def10a0" name="Changes" comment="aggiunta modifica poll">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PollingProg/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/PollingProg/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polls/permissions.py" beforeDir="false" afterPath="$PROJECT_DIR$/polls/permissions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polls/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/polls/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polls/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/polls/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +103,7 @@
       <workItem from="1750424810794" duration="17632000" />
       <workItem from="1751463579601" duration="3764000" />
       <workItem from="1751467486338" duration="686000" />
-      <workItem from="1751971920496" duration="10068000" />
+      <workItem from="1751971920496" duration="10682000" />
     </task>
     <task id="LOCAL-00001" summary=".">
       <option name="closed" value="true" />
@@ -282,7 +273,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751467506419</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="aggiunta modifica poll">
+      <option name="closed" value="true" />
+      <created>1751986464117</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1751986464117</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -301,6 +300,7 @@
     <MESSAGE value=" aggiunta tasto logout" />
     <MESSAGE value="modifiche permessi utente" />
     <MESSAGE value="aggiunta registrazione utente" />
-    <option name="LAST_COMMIT_MESSAGE" value="aggiunta registrazione utente" />
+    <MESSAGE value="aggiunta modifica poll" />
+    <option name="LAST_COMMIT_MESSAGE" value="aggiunta modifica poll" />
   </component>
 </project>
