@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8604fd9a-ab12-4137-a72b-0eb65def10a0" name="Changes" comment="aggiunta modifica poll">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PollingProg/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/PollingProg/settings.py" afterDir="false" />
-    </list>
+    <list default="true" id="8604fd9a-ab12-4137-a72b-0eb65def10a0" name="Changes" comment="modifica debug" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -103,7 +100,7 @@
       <workItem from="1750424810794" duration="17632000" />
       <workItem from="1751463579601" duration="3764000" />
       <workItem from="1751467486338" duration="686000" />
-      <workItem from="1751971920496" duration="10682000" />
+      <workItem from="1751971920496" duration="10754000" />
     </task>
     <task id="LOCAL-00001" summary=".">
       <option name="closed" value="true" />
@@ -281,14 +278,21 @@
       <option name="project" value="LOCAL" />
       <updated>1751986464117</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary=".">
+      <option name="closed" value="true" />
+      <created>1751987055185</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1751987055185</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="." />
     <MESSAGE value="Implementata API polling con JWT e setup base" />
     <MESSAGE value="implementazione client e db" />
     <MESSAGE value="modifiche" />
@@ -301,6 +305,7 @@
     <MESSAGE value="modifiche permessi utente" />
     <MESSAGE value="aggiunta registrazione utente" />
     <MESSAGE value="aggiunta modifica poll" />
-    <option name="LAST_COMMIT_MESSAGE" value="aggiunta modifica poll" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
 </project>
